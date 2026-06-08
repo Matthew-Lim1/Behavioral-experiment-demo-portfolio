@@ -1,0 +1,11 @@
+**/data/*.csv
+**/data/*.json
+**/data/*.txt
+**/interactions_*
+*.RData
+*.Rhistory
+Rplots.pdf
+.DS_Store
+Thumbs.db
+**/outputs*/
+**/openface_raw*/
