@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Perceiving Objects and Events</title>
+    <script src="jspsych-6/jspsych.js"></script>
+    <script src="jspsych-6/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="jspsych-6/plugins/demo-html-keyboard-response.js"></script>
+    <script src="jspsych-6/plugins/demo-html-button-response.js"></script>
+    <script src="jspsych-6/plugins/jspsych-survey-html-form.js"></script>
+    <script src="jspsych-6/plugins/jspsych-fullscreen.js"></script>
+    <link href="jspsych-6/css/jspsych.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            background: #404040;
+            color: #fff;
+        }
+
+        #jspsych-progressbar-container {
+            color: #fff;
+            border-bottom: 1px solid #2f2f2f;
+            background-color: #303030;
+        }
+
+        #jspsych-progressbar-container span {
+            color: #fff;
+        }
+
+        #jspsych-progressbar-outer {
+            background-color: #222;
+            box-shadow: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #jspsych-progressbar-inner {
+            background-color: #fff;
+        }
+
+        .progress-break-marker {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #000;
+            transform: translateX(-1px);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        .memory-shape-name-trial {
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 56px;
+        }
+
+        .memory-shape-name-row {
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .memory-shape-name-text {
+            font-size: 44px;
+            font-weight: 700;
+            letter-spacing: 0;
+        }
+
+        .shape-figure {
+            width: 180px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .shape-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #2f5f9f;
+        }
+
+        .shape-square {
+            width: 160px;
+            height: 160px;
+            background: #3c7f52;
+        }
+
+        .shape-triangle {
+            width: 0;
+            height: 0;
+            border-left: 88px solid transparent;
+            border-right: 88px solid transparent;
+            border-bottom: 160px solid #8e4f7d;
+        }
+
+        .mapping-grid {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin: 24px auto;
+        }
+
+        .mapping-card {
+            width: 240px;
+            min-height: 280px;
+            border: 1px solid #d0d0d0;
+            border-radius: 8px;
+            background: #fff;
+            color: #111;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rc-face-trial {
+            width: min(1000px, 94vw);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(24px, 6vw, 80px);
+            align-items: center;
+            justify-items: center;
+        }
+
+        .rc-choice-shell {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .rc-response-locked .rc-face-option {
+            border: 6px solid #777;
+        }
+
+        .rc-response-ready .rc-face-option {
+            border: 6px solid #000;
+        }
+
+        .rc-block-intro {
+            width: min(900px, 88vw);
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.25vw;
+            line-height: 1.55;
+        }
+
+        .rc-block-intro p {
+            margin: 0 0 28px 0;
+        }
+
+        .rc-block-count {
+            position: fixed;
+            top: 54px;
+            left: 0;
+            width: 100%;
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .rc-trial-prompt {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .rc-trait-word {
+            font-weight: 800;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            text-decoration-thickness: 3px;
+        }
+
+        .rc-trait-lonely {
+            color: #f5d76e;
+            text-decoration-color: #f5d76e;
+        }
+
+        .rc-trait-sad {
+            color: #fff;
+            text-decoration-color: #fff;
+        }
+
+        .rc-definition {
+            width: min(880px, 90vw);
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 17px;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .rc-definition-term {
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+        }
+
+        .completion-code-screen {
+            width: min(820px, 90vw);
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .completion-code-value {
+            font-size: 140%;
+            color: #999;
+            font-weight: 700;
+        }
+
+        .completion-email a {
+            color: #fff;
+            text-decoration: underline;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+        }
+
+        .completion-note {
+            width: min(880px, 90vw);
+            margin: 24px auto 0 auto;
+            color: rgba(255, 255, 255, 0.86);
+            font-size: 17px;
+            line-height: 1.4;
+            text-align: center;
+            font-style: italic;
+        }
+
+        .rc-face-option {
+            width: min(380px, 42vw);
+            aspect-ratio: 1 / 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+
+        .rc-face-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: auto;
+        }
+
+        #phase-indicator-badge .phase-badge-label {
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0;
+            margin-bottom: 6px;
+        }
+
+        #phase-indicator-badge .phase-key-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        #phase-indicator-badge .phase-key-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        #phase-indicator-badge .phase-keycap {
+            width: 22px;
+            min-width: 22px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            font-weight: 700;
+            line-height: 1;
+        }
+    </style>
+</head>
+
+<body></body>
+
+<script src="exp/params.js"></script>
+<script src="exp/core.js"></script>
+<script src="exp/timeline.js"></script>
+<script src="exp/run.js"></script>
+<script src="exp/var.js"></script>
+
+</html>
+
+
